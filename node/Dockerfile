@@ -1,9 +1,10 @@
-FROM node:15
-
+FROM node:14 as builder
 WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
 
-RUN npm install mysql --save
-
-CMD ["node","index.js"]
-
-EXPOSE 3000
+FROM node:14
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app .
+CMD ["npm", "start"]
